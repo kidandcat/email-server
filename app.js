@@ -12,6 +12,7 @@ var mailin = require('mailin');
 
 mailin.on('authorizeUser', function(connection, username, password, done) {
   //if (username == "johnsmith" && password == "mysecret") {
+      console.log(':::::::::::::   authorize');
       console.log(connection);
     done(null, true);
   /*} else {
@@ -28,11 +29,13 @@ mailin.on('startMessage', function (connection) {
       authentication: { username: null, authenticated: false, status: 'NORMAL' }
     }
   }; */
+  console.log(':::::::::::::   startMessage');
   console.log(connection);
 });
 
 /* Event emitted after a message was received and parsed. */
 mailin.on('message', function (connection, data, content) {
+    console.log(':::::::::::::   message');
   console.log(data);
   /* Do something useful with the parsed message here.
    * Use parsed message `data` directly or use raw message `content`. */
