@@ -8,7 +8,7 @@ mailin.start({
 
 
 /* Event emitted after a message was received and parsed. */
-mailin.on('message', function(connection, data, content) {
+mailin.on('message', function(conn, data, content) {
     connection.query("INSERT INTO emails VALUES (null, '" + data.from + "', '" + data.to + "', '" + data.html + "')", function(err, rows, fields) {
         
     });
