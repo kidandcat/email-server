@@ -9,8 +9,10 @@ mailin.start({
 
 /* Event emitted after a message was received and parsed. */
 mailin.on('message', function(connection, data, content) {
-    console.log('from: ' + data.from);
-    console.log('to: ' + data.to);
-    console.log('/n/n/n:::::::::::::   message');
-    console.log(content);
+    console.log('from: ');
+    console.log(data.from);
+    console.log('to: ');
+    console.log(data.to);
+    console.log(':::::::::::::   message');
+    console.log(data.html);
 });
