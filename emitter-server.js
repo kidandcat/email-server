@@ -6,7 +6,7 @@ var bodyParser = require('body-parser');
 var http = require('http');
 var nodemailer = require('nodemailer');
 
-var transporter = nodemailer.createTransport('smtp://jairo%40galax.be:pass@smtp.galax.be');
+var transporter = nodemailer.createTransport('smtp://jairo%40galax.be:pass@galax.be');
 
 //var https = require('https');
 //var privateKey = fs.readFileSync('/etc/letsencrypt/live/galax.be/privkey.pem', 'utf8');
