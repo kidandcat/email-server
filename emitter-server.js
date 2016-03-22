@@ -31,8 +31,7 @@ var httpServer = http.createServer(app);
   } 
 });*/
 
-httpServer.listen(10000);
-//httpsServer.listen(443);
+
 
 module.exports = httpServer;
 
@@ -77,3 +76,7 @@ function sendMail(options/* from, to, subject, text, html */) {
         console.log(err);    
     });
 }
+
+
+httpServer.listen(10000);
+//httpsServer.listen(443);
