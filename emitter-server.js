@@ -11,11 +11,7 @@ var smtpConfig = {
     host: 'galax.be',
     port: 25,
     secure: false, // use SSL
-    ignoreTLS: false,
-    auth: {
-        user: 'user@galax.be',
-        pass: 'pass'
-    }
+    ignoreTLS: true
 };
 var transporter = nodemailer.createTransport(smtpConfig);
 
