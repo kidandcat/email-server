@@ -54,21 +54,21 @@ app.get('/emails/:user/:token', function(req, res, next) {
 
 /* from, to, subject, text, html */
 app.post('/email/new/',function(req, res ,next){
-    sendEmail(req.body);
+    sendMail(req.body);
 });
 
 
 
 app.use(function(err, req, res, next) {
     res.status(err.status || 500);
-    //throw err;
-    res.send(err);
+    throw err;
+    //res.send(err);
 });
 
 
 
 function sendMail(options/* from, to, subject, text, html */) {
-    transporter.sendMail(mailOptions, function(error, info) {
+    transporter.sendMail(options, function(error, info) {
         if (error) {
             return console.log(error);
         }
