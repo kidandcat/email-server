@@ -9,7 +9,7 @@ mailin.start({
 
 /* Event emitted after a message was received and parsed. */
 mailin.on('message', function(conn, data, content) {
-    console.log(data);
+    console.log(data.envelopeFrom.address + "', '" + data.envelopeTo[0].address);
     connection.query("INSERT INTO emails VALUES (null, '" + data.envelopeFrom.address + "', '" + data.envelopeTo[0].address + "', '" + data.html + "')", function(err, rows, fields) {
         if(err){
             console.log(err);
