@@ -5,16 +5,12 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var http = require('http');
 var mysql = require('mysql');
-var nodemailer = require('nodemailer');
+var Email = require('email').Email;
 
 
-var smtpConfig = {
-    host: 'galax.be',
-    port: 25,
-    secure: false, // use SSL
-    ignoreTLS: true
-};
-var transporter = nodemailer.createTransport(smtpConfig);
+
+
+
 
 //var https = require('https');
 //var privateKey = fs.readFileSync('/etc/letsencrypt/live/galax.be/privkey.pem', 'utf8');
@@ -49,11 +45,11 @@ app.use(cookieParser());
 
 
 app.get('/emails/:user/:token', function(req, res, next) {
-    
+
 });
 
 /* from, to, subject, text, html */
-app.post('/email/new/',function(req, res ,next){
+app.post('/email/new/', function(req, res, next) {
     req.body.envelope = {
         from: req.body.from,
         to: req.body.to
@@ -73,11 +69,14 @@ app.use(function(err, req, res, next) {
 
 
 function sendMail(options/* from, to, subject, text, html */) {
-    transporter.sendMail(options, function(error, info) {
-        if (error) {
-            console.log('Error over here!');
-            return console.log(error);
-        }
-        console.log('Message sent: ' + info.response);
+    var myMsg = new Email({
+        from: options.from, 
+        to: options.to, 
+        subject: options.subject, 
+        body: options.html
+    });
+    
+    myMsg.send(function(err){
+        console.log(err);    
     });
 }
