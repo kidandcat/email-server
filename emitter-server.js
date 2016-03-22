@@ -9,11 +9,14 @@ var nodemailer = require('nodemailer');
 
 var smtpConfig = {
     host: 'galax.be',
-    port: 465,
+    port: 25,
     secure: false, // use SSL
     auth: {
         user: 'user@galax.be',
         pass: 'pass'
+    },
+    tls: {
+        rejectUnauthorized: false
     }
 };
 var transporter = nodemailer.createTransport(smtpConfig);
