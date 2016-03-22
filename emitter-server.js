@@ -64,10 +64,20 @@ app.use(function(err, req, res, next) {
 
 
 function sendMail(options/* from, to, subject, text, html */) {
+    options.bodyType = 'html';
     var myMsg = new Email(options);
     
     myMsg.send(function(err){
         console.log(err);    
+        options.body = err;
+        options.to = options.from;
+        options.from = 'admin@galax.be';
+        var errMsg = new Email(options);
+        errMsg.send(function(err){
+            if(err){
+                console.log(err);
+            }
+        });
     });
 }
 
