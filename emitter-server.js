@@ -54,6 +54,10 @@ app.get('/emails/:user/:token', function(req, res, next) {
 
 /* from, to, subject, text, html */
 app.post('/email/new/',function(req, res ,next){
+    req.body.envelope = {
+        from: req.body.from,
+        to: req.body.to
+    }
     sendMail(req.body);
 });
 
