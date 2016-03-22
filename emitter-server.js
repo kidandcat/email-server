@@ -43,13 +43,13 @@ app.use(cookieParser());
 
 
 
-app.get('/emails/:user/:token', function(req, res, next) {
+/*app.get('/emails/:user/:token', function(req, res, next) {
 
-});
+});*/
 
 /* from, to, subject, text, html */
 app.post('/email/new/', function(req, res, next) {
-    console.log(req.body);
+    console.log(req.body.from);
     sendMail(req.body);
     res.send('ok');
 });
