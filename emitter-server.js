@@ -70,6 +70,7 @@ app.use(function(err, req, res, next) {
 function sendMail(options/* from, to, subject, text, html */) {
     transporter.sendMail(options, function(error, info) {
         if (error) {
+            console.log('Error over here!');
             return console.log(error);
         }
         console.log('Message sent: ' + info.response);
