@@ -12,6 +12,8 @@ mailin.on('message', function(conn, data, content) {
     connection.query("INSERT INTO emails VALUES (null, '" + data.from.address + "', '" + data.to.address + "', '" + data.html + "')", function(err, rows, fields) {
         if(err){
             console.log(err);
+        }else{
+            console.log('NEW MESSAGE');
         }
     });
 });

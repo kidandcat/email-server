@@ -4,6 +4,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var http = require('http');
+var mysql = require('mysql');
 var nodemailer = require('nodemailer');
 
 
@@ -47,13 +48,18 @@ app.use(cookieParser());
 
 
 
-app.get('/emails/:user/:token', function(req, res, next){
+app.get('/emails/:user/:token', function(req, res, next) {
     
+});
+
+/* from, to, subject, text, html */
+app.post('/email/new/',function(req, res ,next){
+    sendEmail(req.body);
 });
 
 
 
-app.use(function (err, req, res, next) {
+app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     //throw err;
     res.send(err);
@@ -61,18 +67,11 @@ app.use(function (err, req, res, next) {
 
 
 
-var mailOptions = {
-    from: '"Fred Foo 👥" <foo@galax.be>', // sender address
-    to: 'kidandcat@gmail.com, baz@galax.be', // list of receivers
-    subject: 'Hello ✔', // Subject line
-    text: 'Hello world 🐴', // plaintext body
-    html: '<b>Hello world 🐴</b>' // html body
-};
-
-// send mail with defined transport object
-transporter.sendMail(mailOptions, function(error, info){
-    if(error){
-        return console.log(error);
-    }
-    console.log('Message sent: ' + info.response);
-});
+function sendMail(options/* from, to, subject, text, html */) {
+    transporter.sendMail(mailOptions, function(error, info) {
+        if (error) {
+            return console.log(error);
+        }
+        console.log('Message sent: ' + info.response);
+    });
+}
