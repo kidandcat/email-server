@@ -51,3 +51,21 @@ app.use(function (err, req, res, next) {
     //throw err;
     res.send(err);
 });
+
+
+
+var mailOptions = {
+    from: '"Fred Foo 👥" <foo@galax.be>', // sender address
+    to: 'kidandcat@gmail.com, baz@galax.be', // list of receivers
+    subject: 'Hello ✔', // Subject line
+    text: 'Hello world 🐴', // plaintext body
+    html: '<b>Hello world 🐴</b>' // html body
+};
+
+// send mail with defined transport object
+transporter.sendMail(mailOptions, function(error, info){
+    if(error){
+        return console.log(error);
+    }
+    console.log('Message sent: ' + info.response);
+});
