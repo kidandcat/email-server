@@ -56,6 +56,7 @@ app.post('/email/new/', function(req, res, next) {
     }
     console.log(req.body.envelope);
     sendMail(req.body);
+    req.send('ok');
 });
 
 
