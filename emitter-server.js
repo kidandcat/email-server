@@ -70,12 +70,7 @@ app.use(function(err, req, res, next) {
 
 
 function sendMail(options/* from, to, subject, text, html */) {
-    var myMsg = new Email({
-        from: options.from, 
-        to: options.to, 
-        subject: options.subject, 
-        body: options.html
-    });
+    var myMsg = new Email(options);
     
     myMsg.send(function(err){
         console.log(err);    
