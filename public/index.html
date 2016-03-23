@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="/font-awesome.min.css">
+    <style>
+        #login {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            background-color: lightgray;
+            width: 50%;
+            height: 50%;
+            border-radius: 20px;
+            transform: translate(-50%, -50%);
+        }
+        
+        .center {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        #login span {
+            display: block;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="login">
+        <div id="block" class="center">
+            <span>User:</span>
+            <input type="text" v-model="user">
+            <span>Password:</span>
+            <input type="text" v-model="password">
+        </div>
+    </div>
+</body>
+<script src="/vue.js"></script>
+<script src="/vue-resource.min.js"></script>
+<script>
+    var login = new Vue({
+            el: '#login',
+            data: {
+                user: '',
+                password: ''
+            },
+            methods: {
+                login: function(){
+                    Vue.http.get('/login/' + this.user + '/' + this.password).then(function(res){
+                        console.log(res.data);
+                    }, function(err){
+                        console.log(err);
+                    });
+                }
+            }
+        });
+</script>
+
+</html>

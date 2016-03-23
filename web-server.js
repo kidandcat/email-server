@@ -3,8 +3,9 @@ var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var toobusy = require('toobusy-js');
 var http = require('http');
+var connection = require('./libs/dbconnection');
+
 
 
 var app = express();
@@ -29,7 +30,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.get('/login/:user/:pass', function(req, res){
-    
+    connection.query("SELECT * FROM emails WHERE _to = '" + req.params.user + "@galax.be'", function(err, rows, fields) {
+        if(err){
+            console.log(err);
+        }else{
+            res.json(rows);
+        }
+    });
 });
 
 

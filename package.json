@@ -17,7 +17,11 @@
   },
   "homepage": "https://github.com/kidandcat/email-server#readme",
   "dependencies": {
+    "body-parser": "^1.15.0",
+    "cookie-parser": "^1.4.1",
+    "express": "^4.13.4",
     "mailin": "^3.0.3",
+    "morgan": "^1.7.0",
     "mysql": "^2.10.2"
   }
 }
