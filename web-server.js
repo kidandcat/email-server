@@ -29,19 +29,49 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 
-app.get('/login/:user/:pass', function(req, res){
-    connection.query("SELECT * FROM emails WHERE _to = '" + req.params.user + "@galax.be'", function(err, rows, fields) {
-        if(err){
-            console.log(err);
-        }else{
-            res.json(rows);
-        }
-    });
+app.get('/login/:user/:password', function(req, res) {
+    if (req.params.user != 'admin') {
+        console.log("SELECT * FROM users WHERE nick = '" + req.params.user + "' AND password = '" + req.params.password + "'");
+        connection.query("SELECT * FROM users WHERE nick = '" + req.params.user + "' AND password = '" + req.params.password + "'", function(err, rows, fields) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(rows[0]);
+                if (typeof rows[0] != 'undefined') {
+                    connection.query("SELECT * FROM emails WHERE _to = '" + req.params.user + "@galax.be'", function(err, rows, fields) {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            res.json(rows);
+                        }
+                    });
+                }
+            }
+        });
+    } else {
+        console.log("SELECT * FROM users WHERE nick = '" + req.params.user + "' AND password = '" + req.params.password + "'");
+        connection.query("SELECT * FROM users WHERE nick = 'admin' AND password = '" + req.params.password + "'", function(err, rows, fields) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(rows[0]);
+                if (typeof rows[0] != 'undefined') {
+                    connection.query("SELECT * FROM emails", function(err, rows, fields) {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            res.json(rows);
+                        }
+                    });
+                }
+            }
+        });
+    }
 });
 
 
 
-app.use(function (err, req, res, next) {
+app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     //throw err;
     res.send(err);
