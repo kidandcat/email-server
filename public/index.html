@@ -4,60 +4,110 @@
 <head>
     <link rel="stylesheet" href="/font-awesome.min.css">
     <style>
-        #login {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            background-color: lightgray;
-            width: 50%;
-            height: 50%;
-            border-radius: 20px;
-            transform: translate(-50%, -50%);
+        html {
+            background-color: #005ce6;
         }
         
         .center {
-            position: fixed;
+            position: absolute;
             top: 50%;
             left: 50%;
+            background-color: #efeff5;
             transform: translate(-50%, -50%);
+            padding: 30px;
+            padding-left: 80px;
+            padding-right: 80px;
+            border-radius: 20px;
+            font-size: 20px;
+            width: 20%;
         }
         
-        #login span {
-            display: block;
-            margin-top: 15px;
+        .mail-from {
+            padding: 15px;
+            color: green;
+            border: 1px solid green;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        #mail {
+            background-color: white;
+            margin: 80px;
+            padding: 100px;
+            border-radius: 10px;
+        }
+        
+        #title {
+            width: 100%;
+            display: inline-block;
+            font-size: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #0000b3;
+            font-weight: bold;
+        }
+        
+        .center input {
+            width: 90%;
+            margin-bottom: 10%;
+            border: none;
+            background: none;
+            background-color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 16px;
+            outline: none;
+            color: #1a1aff;
         }
     </style>
 </head>
 
 <body>
     <div id="login">
-        <div id="block" class="center">
-            <span>User:</span>
-            <input type="text" v-model="user">
-            <span>Password:</span>
-            <input type="text" v-model="password">
-        </div>
+        <template v-if="logged">
+            <div id="block" class="centerMail">
+                <template v-for="mail in mails">
+                    <div id="mail">
+                        <div class="mail-from">{{ mail._from }}</div>
+                        <div class="mail-body">{{{ decodeURIComponent(mail._body) }}}</div>
+                    </div>
+                </template>
+            </div>
+        </template>
+        <template v-else>
+            <div id="block" class="center">
+                <div id="title">Login</div>
+                <input type="text" v-model="user" placeholder="User" autofocus>
+                <input type="text" v-model="password" v-on:keyup.enter="log" placeholder="Password">
+            </div>
+        </template>
     </div>
 </body>
 <script src="/vue.js"></script>
 <script src="/vue-resource.min.js"></script>
 <script>
-    var login = new Vue({
+    var logn = new Vue({
             el: '#login',
             data: {
                 user: '',
-                password: ''
+                password: '',
+                logged: false,
+                mails: ''
             },
             methods: {
-                login: function(){
+                log: function() {
+                    var self = this;
+                    this.logged = true;
                     Vue.http.get('/login/' + this.user + '/' + this.password).then(function(res){
-                        console.log(res.data);
+                        console.log(res);
+                        self.mails = res.data;
                     }, function(err){
                         console.log(err);
                     });
                 }
             }
         });
+
 </script>
 
 </html>
