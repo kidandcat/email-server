@@ -30,6 +30,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.get('/login/:user/:password', function(req, res) {
+    // post to 127.0.0.1:8010 /email/new/
+});
+
+app.get('/login/:user/:password', function(req, res) {
     if (req.params.user != 'admin') {
         console.log("SELECT * FROM users WHERE nick = '" + req.params.user + "' AND password = '" + req.params.password + "'");
         connection.query("SELECT * FROM users WHERE nick = '" + req.params.user + "' AND password = '" + req.params.password + "'", function(err, rows, fields) {
