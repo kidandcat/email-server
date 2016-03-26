@@ -29,9 +29,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 
-app.get('/login/:user/:password', function(req, res) {
+//app.get('/login/:user/:password', function(req, res) {
     // post to 127.0.0.1:8010 /email/new/
-});
+//});
 
 app.get('/login/:user/:password', function(req, res) {
     if (req.params.user != 'admin') {
@@ -42,7 +42,7 @@ app.get('/login/:user/:password', function(req, res) {
             } else {
                 console.log(rows[0]);
                 if (typeof rows[0] != 'undefined') {
-                    connection.query("SELECT * FROM emails WHERE _to = '" + req.params.user + "@galax.be'", function(err, rows, fields) {
+                    connection.query("SELECT * FROM emails WHERE _to = '" + req.params.user + "@galax.be' order by date desc", function(err, rows, fields) {
                         if (err) {
                             console.log(err);
                         } else {
@@ -60,7 +60,7 @@ app.get('/login/:user/:password', function(req, res) {
             } else {
                 console.log(rows[0]);
                 if (typeof rows[0] != 'undefined') {
-                    connection.query("SELECT * FROM emails", function(err, rows, fields) {
+                    connection.query("SELECT * FROM emails order by date desc", function(err, rows, fields) {
                         if (err) {
                             console.log(err);
                         } else {
