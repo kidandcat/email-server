@@ -69,7 +69,7 @@ app.get('/login/:user/:password', function(req, res) {
                         }
                     });
                 }else{
-                    res.send('not authorized');
+                    res.json({0: ['not authorized']});
                 }
             }
         });
