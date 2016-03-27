@@ -53,6 +53,7 @@ function sendMail(options/* from, to, subject, body */) {
 
     myMsg.send(function(err) {
         if (err) {
+            console.log(err);
             opts = {
                 from: 'admin@galax.be',
                 to: options.from,
