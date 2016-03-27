@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var http = require('http');
 var connection = require('./libs/dbconnection');
+var request = require('request');
 
 
 
@@ -29,9 +30,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 
-//app.get('/login/:user/:password', function(req, res) {
-    // post to 127.0.0.1:8010 /email/new/
-//});
+app.post('/new', function(req, res) {
+    http.get({ host: 'localhost', path: '/email/new', port: 8010 }, function(response) {
+
+    });
+
+    request.post('http://www.yoursite.com/formpage', { form: { key: 'value' } }, function(error, response, body) {
+        if (!error && response.statusCode == 200) {
+            console.log(body)
+        }
+    }
+    );
+});
 
 app.get('/login/:user/:password', function(req, res) {
     if (req.params.user != 'admin') {
@@ -48,7 +58,7 @@ app.get('/login/:user/:password', function(req, res) {
                             res.json(rows);
                         }
                     });
-                }else{
+                } else {
                     res.send('not authorized');
                 }
             }
@@ -68,8 +78,8 @@ app.get('/login/:user/:password', function(req, res) {
                             res.json(rows);
                         }
                     });
-                }else{
-                    res.json({0: ['not authorized']});
+                } else {
+                    res.json({ 0: ['not authorized'] });
                 }
             }
         });
