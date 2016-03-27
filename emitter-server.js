@@ -49,6 +49,7 @@ app.use(cookieParser());
 
 /* from, to, subject, text, html */
 app.post('/email/new/', function(req, res, next) {
+    console.log(req.body);
     sendMail(req.body);
     res.send('ok');
 });

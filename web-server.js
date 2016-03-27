@@ -31,16 +31,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.post('/new', function(req, res) {
-    http.get({ host: 'localhost', path: '/email/new', port: 8010 }, function(response) {
-
-    });
-
-    request.post('http://www.yoursite.com/formpage', { form: { key: 'value' } }, function(error, response, body) {
+    request.post('http://127.0.0.1:8010/email/new', { form: req.body }, function(error, response, body) {
         if (!error && response.statusCode == 200) {
-            console.log(body)
+            console.log(body);
+        } else {
+            console.log('err');
+            console.log(body);
         }
-    }
-    );
+    });
 });
 
 app.get('/login/:user/:password', function(req, res) {
