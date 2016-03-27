@@ -30,7 +30,7 @@
             margin-bottom: 20px;
         }
         
-        #mail {
+        .mail {
             background-color: white;
             margin: 80px;
             padding: 100px;
@@ -45,6 +45,10 @@
             margin-bottom: 30px;
             color: #0000b3;
             font-weight: bold;
+        }
+        
+        .not-auth{
+            color: red;
         }
         
         .center input {
@@ -66,10 +70,15 @@
     <div id="login">
         <template v-if="logged">
             <div id="block" class="centerMail">
-                <template v-for="mail in mails">
-                    <div id="mail">
+                <template v-for="mail in mails" v-if="auth">
+                    <div class="mail">
                         <div class="mail-from">{{ mail._from }}</div>
                         <div class="mail-body">{{{ decodeURIComponent(mail._body) }}}</div>
+                    </div>
+                </template>
+                <template v-else>
+                    <div class="not-auth">
+                        Not Authorized
                     </div>
                 </template>
             </div>
@@ -92,7 +101,8 @@
                 user: '',
                 password: '',
                 logged: false,
-                mails: ''
+                mails: '',
+                auth: true
             },
             methods: {
                 log: function() {
@@ -100,7 +110,11 @@
                     this.logged = true;
                     Vue.http.get('/login/' + this.user + '/' + this.password).then(function(res){
                         console.log(res);
-                        self.mails = res.data;
+                        if(res.data == 'not authorized'){
+                            self.auth = false;
+                        }else{
+                            self.mails = res.data;
+                        }
                     }, function(err){
                         console.log(err);
                     });
