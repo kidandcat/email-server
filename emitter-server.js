@@ -28,19 +28,12 @@ app.use(cookieParser());
 
 /* from, to, subject, text, html */
 app.post('/email/new/', function(req, res, next) {
-    console.log('body');
-    console.log({
-        from: req.body.from,
-        to: req.body.to,
-        subject: req.body.subject,
-        body: req.body.body
-    });
-    sendMail({
+    sendMail(req.body/*{
         from: 'jairo@galax.be',
         to: 'kidandcat@gmail.com',
         subject: 'prueba',
         body: 'prueba'
-    });
+    }*/);
     res.send('ok');
 });
 
@@ -57,18 +50,22 @@ app.use(function(err, req, res, next) {
 function sendMail(options/* from, to, subject, body */) {
     options.bodyType = 'html';
     var myMsg = new Email(options);
-    
-    myMsg.send(function(err){
-        console.log(err);    
-        options.body = err;
-        options.to = options.from;
-        options.from = 'admin@galax.be';
-        var errMsg = new Email(options);
-        errMsg.send(function(err){
-            if(err){
-                console.log(err);
+
+    myMsg.send(function(err) {
+        if (err) {
+            opts = {
+                from: 'admin@galax.be',
+                to: options.from,
+                subject: 'Email could not be delivered',
+                body: err.name
             }
-        });
+            var errMsg = new Email(options);
+            errMsg.send(function(err) {
+                if (err) {
+                    console.log(err);
+                }
+            });
+        }
     });
 }
 
