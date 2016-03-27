@@ -47,7 +47,7 @@
             font-weight: bold;
         }
         
-        .not-auth{
+        .not-auth {
             color: red;
         }
         
@@ -70,11 +70,13 @@
     <div id="login">
         <template v-if="logged">
             <div id="block" class="centerMail">
-                <template v-for="mail in mails" v-if="auth">
-                    <div class="mail">
-                        <div class="mail-from">{{ mail._from }}</div>
-                        <div class="mail-body">{{{ decodeURIComponent(mail._body) }}}</div>
-                    </div>
+                <template v-if="auth">
+                    <template v-for="mail in mails">
+                        <div class="mail">
+                            <div class="mail-from">{{ mail._from }}</div>
+                            <div class="mail-body">{{{ decodeURIComponent(mail._body) }}}</div>
+                        </div>
+                    </template>
                 </template>
                 <template v-else>
                     <div class="not-auth">
