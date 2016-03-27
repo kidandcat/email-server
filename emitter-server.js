@@ -29,6 +29,7 @@ app.use(cookieParser());
 /* from, to, subject, text, html */
 app.post('/email/new/', function(req, res, next) {
     console.log('body');
+    IsJsonString(req.body);
     console.log(req.body);
     sendMail(req.body);
     res.send('ok');
@@ -44,7 +45,7 @@ app.use(function(err, req, res, next) {
 
 
 
-function sendMail(options/* from, to, subject, text, html */) {
+function sendMail(options/* from, to, subject, body */) {
     options.bodyType = 'html';
     var myMsg = new Email(options);
     
@@ -60,6 +61,16 @@ function sendMail(options/* from, to, subject, text, html */) {
             }
         });
     });
+}
+
+
+function IsJsonString(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
 }
 
 
