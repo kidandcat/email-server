@@ -37,7 +37,7 @@ app.post('/new', function(req, res) {
             res.send('ok');
         } else {
             console.log('err');
-            console.log(body);
+            console.log(error);
             res.send('ko');
         }
     });
