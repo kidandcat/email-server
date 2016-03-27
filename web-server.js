@@ -31,7 +31,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.post('/new', function(req, res) {
-    request.post('http://127.0.0.1:8010/email/new', { form: req.body }, function(error, response, body) {
+    request.post('http://127.0.0.1:8010/email/new', {form:{from: req.body.from, to: req.body.to, subject: req.body.subject, body: req.body.body}, function(error, response, body) {
         if (!error && response.statusCode == 200) {
             console.log(body);
             res.send('ok');
