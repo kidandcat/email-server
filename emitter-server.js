@@ -9,31 +9,10 @@ var Email = require('email').Email;
 
 
 
-
-
-
-//var https = require('https');
-//var privateKey = fs.readFileSync('/etc/letsencrypt/live/galax.be/privkey.pem', 'utf8');
-//var certificate = fs.readFileSync('/etc/letsencrypt/live/galax.be/cert.pem', 'utf8');
-//var credentials = {key: privateKey, cert: certificate};
-
 var app = express();
 
 var httpServer = http.createServer(app);
-//var httpsServer = https.createServer(credentials, app);
 
-//redirect http to https
-/*app.use(function(req, res, next) {
-  if (req.protocol != 'https') {
-    res.redirect(301, "https://" + req.headers["host"] + req.url);
-  } else {
-    next();
-  } 
-});*/
-
-
-
-module.exports = httpServer;
 
 
 app.use(logger('dev'));
@@ -85,4 +64,5 @@ function sendMail(options/* from, to, subject, text, html */) {
 
 
 httpServer.listen('127.0.0.1:8010');
+console.log('server listening in 127.0.0.1:8010');
 //httpsServer.listen(443);
