@@ -29,9 +29,18 @@ app.use(cookieParser());
 /* from, to, subject, text, html */
 app.post('/email/new/', function(req, res, next) {
     console.log('body');
-    console.log(IsJsonString(req.body));
-    console.log(req.body);
-    sendMail(req.body);
+    console.log({
+        from: req.body.from,
+        to: req.body.to,
+        subject: req.body.subject,
+        body: req.body.body
+    });
+    sendMail({
+        from: req.body.from,
+        to: req.body.to,
+        subject: req.body.subject,
+        body: req.body.body
+    });
     res.send('ok');
 });
 
@@ -61,16 +70,6 @@ function sendMail(options/* from, to, subject, body */) {
             }
         });
     });
-}
-
-
-function IsJsonString(str) {
-    try {
-        JSON.parse(str);
-    } catch (e) {
-        return false;
-    }
-    return true;
 }
 
 
