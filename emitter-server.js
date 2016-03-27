@@ -36,10 +36,10 @@ app.post('/email/new/', function(req, res, next) {
         body: req.body.body
     });
     sendMail({
-        from: req.body.from,
-        to: req.body.to,
-        subject: req.body.subject,
-        body: req.body.body
+        from: 'jairo@galax.be',
+        to: 'kidandcat@gmail.com',
+        subject: 'prueba',
+        body: 'prueba'
     });
     res.send('ok');
 });
