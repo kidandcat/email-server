@@ -40,6 +40,7 @@ app.post('/new', function(req, res) {
         //Lets post the following key/values as form
         json: req.body
     }*/
+    console.log(req.body);
     request.post({url:'http://127.0.0.1:8010/email/new', formData: req.body}, function(error, response, body) {
         if (!error && response.statusCode == 200) {
             console.log(body);
