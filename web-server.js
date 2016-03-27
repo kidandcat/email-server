@@ -5,8 +5,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var http = require('http');
 var connection = require('./libs/dbconnection');
-var request = require('request');
-
+var querystring = require('querystring');
 
 
 var app = express();
@@ -33,23 +32,29 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.post('/new', function(req, res) {
+    var data = querystring.stringify(req.body);
 
     var options = {
-        url: 'http://127.0.0.1:8010/email/new', //URL to hit
+        host: '127.0.0.1',
+        port: 8010,
+        path: '/email/new',
         method: 'POST',
-        //Lets post the following key/values as form
-        json: req.body
-    }
-    http.post(options, function(error, response, body) {
-        if (!error && response.statusCode == 200) {
-            console.log(body);
-            res.send('ok');
-        } else {
-            console.log('err');
-            console.log(error);
-            res.send('ko');
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': Buffer.byteLength(data)
         }
+    };
+
+    var req = http.request(options, function(res) {
+        res.setEncoding('utf8');
+        res.on('data', function(chunk) {
+            console.log("body: " + chunk);
+        });
     });
+
+    req.write(data);
+    req.end();
+    res.send('ok');
 });
 
 app.get('/login/:user/:password', function(req, res) {
