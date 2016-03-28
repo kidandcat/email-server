@@ -59,11 +59,21 @@
             outline: none;
             color: #1a1aff;
         }
+        
+        #check {
+            width: 10%;
+            display: inline-block;
+        }
+        
+        .checkLabel {
+            font-size: 14px;
+            display: inline-block;
+        }
     </style>
 </head>
 
 <body>
-    <div id="login">
+    <div id="app">
         <template v-if="logged">
             <div id="block" class="centerMail">
                 <template v-for="mail in mails">
@@ -78,21 +88,24 @@
             <div id="block" class="center">
                 <div id="title">Login</div>
                 <input type="text" v-model="user" placeholder="User" autofocus>
-                <input type="password" v-model="password" v-on:keyup.enter="log" placeholder="Password">
+                <input id="loginPassword" type="password" v-model="password" v-on:keyup.enter="log" placeholder="Password">
+                <input id="check" type="checkbox" v-model="stay"><span class="checkLabel">Stay logged</span>
             </div>
         </template>
     </div>
 </body>
 <script src="/vue.js"></script>
 <script src="/vue-resource.min.js"></script>
+<script src="/vue-router.min.js"></script>
 <script>
-    var logn = new Vue({
-            el: '#login',
+        var logn = new Vue({
+            el: '#app',
             data: {
                 user: '',
                 password: '',
                 logged: false,
-                mails: ''
+                mails: '',
+                stay: false
             },
             methods: {
                 log: function() {
@@ -100,6 +113,13 @@
                     this.logged = true;
                     Vue.http.get('/login/' + this.user + '/' + this.password).then(function(res){
                         console.log(res);
+                        if(self.stay){
+                            localStorage.setItem('galaxU', self.user);
+                            localStorage.setItem('galaxP', self.password);
+                        }else{
+                            localStorage.removeItem('galaxU', self.user);
+                            localStorage.removeItem('galaxP', self.password);
+                        }
                         self.mails = res.data;
                     }, function(err){
                         console.log(err);
@@ -107,6 +127,15 @@
                 }
             }
         });
+        
+        if(localStorage.getItem('galaxU')){
+            logn.user = localStorage.getItem('galaxU');
+        }
+        if(localStorage.getItem('galaxP')){
+            logn.password = localStorage.getItem('galaxP');
+            logn.stay = true;
+            document.querySelector('#loginPassword').focus();
+        }
 
 </script>
 
