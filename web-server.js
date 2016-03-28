@@ -31,7 +31,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 
-app.post('/new/:token', function(req, res) {
+app.post('/new/:token', function(request, response) {
+    var req = request;
+    var res = response;
     auth(req.params.token,function(user){
         if(user == "no user found"){
             res.send('not authorized');
