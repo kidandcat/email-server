@@ -32,31 +32,36 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.post('/new/:token', function(req, res) {
-    eval(auth(req.params.token));
-
-    var data = querystring.stringify(req.body);
-
-    var options = {
-        host: '127.0.0.1',
-        port: 8010,
-        path: '/email/new',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Content-Length': Buffer.byteLength(data)
+    auth(req.params.token,function(user){
+        if(user == "no user found"){
+            res.send('not authorized');
+            return false;
         }
-    };
+        req.body.from = user + '@galax.be';
+        var data = querystring.stringify(req.body);
 
-    var req = http.request(options, function(res) {
-        res.setEncoding('utf8');
-        res.on('data', function(chunk) {
-            console.log("body: " + chunk);
+        var options = {
+            host: '127.0.0.1',
+            port: 8010,
+            path: '/email/new',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Length': Buffer.byteLength(data)
+            }
+        };
+
+        var req = http.request(options, function(res) {
+            res.setEncoding('utf8');
+            res.on('data', function(chunk) {
+                console.log("body: " + chunk);
+            });
         });
-    });
 
-    req.write(data);
-    req.end();
-    res.send('ok');
+        req.write(data);
+        req.end();
+        res.send('ok');
+    });
 });
 
 app.get('/login/:user/:password', function(req, res) {
@@ -64,14 +69,14 @@ app.get('/login/:user/:password', function(req, res) {
         if (err) {
             console.log(err);
         } else {
-            console.log(rows[0]);
             if (typeof rows[0] != 'undefined') {
+                console.log('generating token');
                 var token = genToken();
                 connection.query("UPDATE users SET token='" + token + "' WHERE nick='" + req.params.user + "'", function(err, rows, fields) {
                     if (err) {
                         console.log(err);
                     } else {
-                        res.send({ token: token });
+                        res.send({ token: token, auth: true });
                     }
                 });
             } else {
@@ -82,15 +87,19 @@ app.get('/login/:user/:password', function(req, res) {
 });
 
 app.get('/mails/:token', function(req, res) {
-    eval(auth(req.params.token));
-
-    connection.query("SELECT * FROM emails WHERE _to = '" + _user + "@galax.be' order by date desc", function(err, rows, fields) {
-        if (err) {
-            console.log(err);
-            res.send('error');
-        } else {
-            res.json(rows);
+    auth(req.params.token,function(user){
+        if(user == "no user found"){
+            res.send('not authorized');
+            return false;
         }
+        connection.query("SELECT * FROM emails WHERE _to = '" + user + "@galax.be' order by date desc", function(err, rows, fields) {
+            if (err) {
+                console.log(err);
+                res.send('error');
+            } else {
+                res.json(rows);
+            }
+        });
     });
 });
 
@@ -107,23 +116,24 @@ function genToken() {
     return Math.floor(Math.random() * 100000000);
 }
 
-function auth(token) {
+function auth(token, cb) {
     /*
     var user = auth(req.params.token);
-    if(!user){
-        res.send('unauthorized');
+    if(user == "no user found"){
+        res.send('not authorized');
         return false;
     }
     */
     connection.query("SELECT * FROM users WHERE token = '" + token + "'", function(err, rows, fields) {
         if (err) {
             console.log(err);
+            cb("no user found");
         } else {
-            console.log(rows[0]);
             if (typeof rows[0] != 'undefined') {
-                return '"var _user = ' + rows[0].nick + '"';
+                cb(rows[0].nick);
+            }else{
+                cb("no user found");
             }
         }
-        return "return false;";
     });
 }
