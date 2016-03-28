@@ -122,14 +122,15 @@
                 logged: false,
                 mails: '',
                 stay: false,
-                auth: true
+                auth: true,
+                token: ''
             },
             methods: {
                 log: function() {
                     var self = this;
                     this.logged = true;
                     Vue.http.get('/login/' + this.user + '/' + this.password).then(function(res){
-                        if(res.data == 'not authorized'){
+                        if(!res.data.auth){
                             self.auth = false;
                         }else{
                             if(self.stay){
@@ -139,7 +140,14 @@
                                 localStorage.removeItem('galaxU', self.user);
                                 localStorage.removeItem('galaxP', self.password);
                             }
-                            self.mails = res.data;
+                            self.token = res.data.token;
+                            Vue.http.get('/mails/' + res.data.token).then(function(res){
+                                if(res.data != 'error'){
+                                    self.mails = res.data;
+                                }
+                            }, function(err){
+                                console.log(err);
+                            });
                         }
                     }, function(err){
                         console.log(err);

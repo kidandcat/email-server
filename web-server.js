@@ -31,7 +31,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 
-app.post('/new', function(req, res) {
+app.post('/new/:token', function(req, res) {
+    eval(auth(req.params.token));
+
     var data = querystring.stringify(req.body);
 
     var options = {
@@ -58,46 +60,38 @@ app.post('/new', function(req, res) {
 });
 
 app.get('/login/:user/:password', function(req, res) {
-    if (req.params.user != 'admin') {
-        connection.query("SELECT * FROM users WHERE nick = '" + req.params.user + "' AND password = '" + req.params.password + "'", function(err, rows, fields) {
-            if (err) {
-                console.log(err);
+    connection.query("SELECT * FROM users WHERE nick = '" + req.params.user + "' AND password = '" + req.params.password + "'", function(err, rows, fields) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(rows[0]);
+            if (typeof rows[0] != 'undefined') {
+                var token = genToken();
+                connection.query("UPDATE users SET token='" + token + "' WHERE nick='" + req.params.user + "'", function(err, rows, fields) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        res.send({ token: token });
+                    }
+                });
             } else {
-                console.log(rows[0]);
-                if (typeof rows[0] != 'undefined') {
-                    connection.query("SELECT * FROM emails WHERE _to = '" + req.params.user + "@galax.be' order by date desc", function(err, rows, fields) {
-                        if (err) {
-                            console.log(err);
-                        } else {
-                            res.json(rows);
-                        }
-                    });
-                } else {
-                    res.send('not authorized');
-                }
+                res.send('not authorized');
             }
-        });
-    } else {
-        console.log("SELECT * FROM users WHERE nick = '" + req.params.user + "' AND password = '" + req.params.password + "'");
-        connection.query("SELECT * FROM users WHERE nick = 'admin' AND password = '" + req.params.password + "'", function(err, rows, fields) {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log(rows[0]);
-                if (typeof rows[0] != 'undefined') {
-                    connection.query("SELECT * FROM emails order by date desc", function(err, rows, fields) {
-                        if (err) {
-                            console.log(err);
-                        } else {
-                            res.json(rows);
-                        }
-                    });
-                } else {
-                    res.json({ 0: ['not authorized'] });
-                }
-            }
-        });
-    }
+        }
+    });
+});
+
+app.get('/mails/:token', function(req, res) {
+    eval(auth(req.params.token));
+
+    connection.query("SELECT * FROM emails WHERE _to = '" + _user + "@galax.be' order by date desc", function(err, rows, fields) {
+        if (err) {
+            console.log(err);
+            res.send('error');
+        } else {
+            res.json(rows);
+        }
+    });
 });
 
 
@@ -107,3 +101,29 @@ app.use(function(err, req, res, next) {
     //throw err;
     res.send(err);
 });
+
+
+function genToken() {
+    return Math.floor(Math.random() * 100000000);
+}
+
+function auth(token) {
+    /*
+    var user = auth(req.params.token);
+    if(!user){
+        res.send('unauthorized');
+        return false;
+    }
+    */
+    connection.query("SELECT * FROM users WHERE token = '" + token + "'", function(err, rows, fields) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(rows[0]);
+            if (typeof rows[0] != 'undefined') {
+                return '"var _user = ' + rows[0].nick + '"';
+            }
+        }
+        return "return false;";
+    });
+}
