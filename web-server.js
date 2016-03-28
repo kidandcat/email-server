@@ -37,6 +37,7 @@ app.post('/new/:token', function(req, res) {
             res.send('not authorized');
             return false;
         }
+        console.log(req.body);
         req.body.from = user + '@galax.be';
         var data = querystring.stringify(req.body);
 
