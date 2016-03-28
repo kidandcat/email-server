@@ -9,31 +9,10 @@ var Email = require('email').Email;
 
 
 
-
-
-
-//var https = require('https');
-//var privateKey = fs.readFileSync('/etc/letsencrypt/live/galax.be/privkey.pem', 'utf8');
-//var certificate = fs.readFileSync('/etc/letsencrypt/live/galax.be/cert.pem', 'utf8');
-//var credentials = {key: privateKey, cert: certificate};
-
 var app = express();
 
 var httpServer = http.createServer(app);
-//var httpsServer = https.createServer(credentials, app);
 
-//redirect http to https
-/*app.use(function(req, res, next) {
-  if (req.protocol != 'https') {
-    res.redirect(301, "https://" + req.headers["host"] + req.url);
-  } else {
-    next();
-  } 
-});*/
-
-
-
-module.exports = httpServer;
 
 
 app.use(logger('dev'));
@@ -49,7 +28,12 @@ app.use(cookieParser());
 
 /* from, to, subject, text, html */
 app.post('/email/new/', function(req, res, next) {
-    sendMail(req.body);
+    sendMail(req.body/*{
+        from: 'jairo@galax.be',
+        to: 'kidandcat@gmail.com',
+        subject: 'prueba',
+        body: 'prueba'
+    }*/);
     res.send('ok');
 });
 
@@ -63,24 +47,30 @@ app.use(function(err, req, res, next) {
 
 
 
-function sendMail(options/* from, to, subject, text, html */) {
+function sendMail(options/* from, to, subject, body */) {
     options.bodyType = 'html';
     var myMsg = new Email(options);
-    
-    myMsg.send(function(err){
-        console.log(err);    
-        options.body = err;
-        options.to = options.from;
-        options.from = 'admin@galax.be';
-        var errMsg = new Email(options);
-        errMsg.send(function(err){
-            if(err){
-                console.log(err);
+
+    myMsg.send(function(err) {
+        if (err) {
+            console.log(err);
+            opts = {
+                from: 'admin@galax.be',
+                to: options.from,
+                subject: 'Email could not be delivered',
+                body: err.name
             }
-        });
+            var errMsg = new Email(options);
+            errMsg.send(function(err) {
+                if (err) {
+                    console.log(err);
+                }
+            });
+        }
     });
 }
 
 
-httpServer.listen(10000);
+httpServer.listen(8010, '127.0.0.1');
+console.log('server listening in 127.0.0.1:8010');
 //httpsServer.listen(443);

@@ -30,7 +30,7 @@
             margin-bottom: 20px;
         }
         
-        #mail {
+        .mail {
             background-color: white;
             margin: 80px;
             padding: 100px;
@@ -45,6 +45,15 @@
             margin-bottom: 30px;
             color: #0000b3;
             font-weight: bold;
+        }
+        
+        .not-auth {
+            color: white;
+            background-color: red;
+            padding: 80px;
+            border-radius: 10px;
+            font-size: 60px;
+            text-align: center;
         }
         
         .center input {
@@ -76,10 +85,17 @@
     <div id="app">
         <template v-if="logged">
             <div id="block" class="centerMail">
-                <template v-for="mail in mails">
-                    <div id="mail">
-                        <div class="mail-from">{{ mail._from }}</div>
-                        <div class="mail-body">{{{ decodeURIComponent(mail._body) }}}</div>
+                <template v-if="auth">
+                    <template v-for="mail in mails">
+                        <div class="mail">
+                            <div class="mail-from">{{ mail._from }}</div>
+                            <div class="mail-body">{{{ decodeURIComponent(mail._body) }}}</div>
+                        </div>
+                    </template>
+                </template>
+                <template v-else>
+                    <div class="not-auth center">
+                        Not Authorized
                     </div>
                 </template>
             </div>
@@ -105,22 +121,26 @@
                 password: '',
                 logged: false,
                 mails: '',
-                stay: false
+                stay: false,
+                auth: true
             },
             methods: {
                 log: function() {
                     var self = this;
                     this.logged = true;
                     Vue.http.get('/login/' + this.user + '/' + this.password).then(function(res){
-                        console.log(res);
-                        if(self.stay){
-                            localStorage.setItem('galaxU', self.user);
-                            localStorage.setItem('galaxP', self.password);
+                        if(res.data == 'not authorized'){
+                            self.auth = false;
                         }else{
-                            localStorage.removeItem('galaxU', self.user);
-                            localStorage.removeItem('galaxP', self.password);
+                            if(self.stay){
+                                localStorage.setItem('galaxU', self.user);
+                                localStorage.setItem('galaxP', self.password);
+                            }else{
+                                localStorage.removeItem('galaxU', self.user);
+                                localStorage.removeItem('galaxP', self.password);
+                            }
+                            self.mails = res.data;
                         }
-                        self.mails = res.data;
                     }, function(err){
                         console.log(err);
                     });
