@@ -31,9 +31,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 
-app.post('/new/:token', function(request, response) {
-    var req = request;
-    var res = response;
+app.post('/new/:token', function(req, res) {
     auth(req.params.token,function(user){
         if(user == "no user found"){
             res.send('not authorized');
@@ -54,15 +52,15 @@ app.post('/new/:token', function(request, response) {
             }
         };
 
-        var req = http.request(options, function(res) {
+        var req2 = http.request(options, function(res) {
             res.setEncoding('utf8');
             res.on('data', function(chunk) {
                 console.log("body: " + chunk);
             });
         });
 
-        req.write(data);
-        req.end();
+        req2.write(data);
+        req2.end();
         res.send('ok');
     });
 });
