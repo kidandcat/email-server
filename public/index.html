@@ -3,9 +3,12 @@
 
 <head>
     <link rel="stylesheet" href="/font-awesome.min.css">
+    <script src="tinymce.min.js"></script>
     <style>
         html {
             background-color: #005ce6;
+            height: 100%;
+            width: 100%;
         }
         
         .center {
@@ -28,6 +31,12 @@
             border: 1px solid green;
             border-radius: 5px;
             margin-bottom: 20px;
+            font-size: 1.3em;
+            font-family: 'Helvetica Neue', sans-serif;
+        }
+        
+        .mail-from span {
+            font-size: 0.5em;
         }
         
         .mail {
@@ -69,6 +78,103 @@
             color: #1a1aff;
         }
         
+        .new {
+            position: fixed;
+            left: 90%;
+            top: 10%;
+            transform: translate(-50%, -50%);
+            background: none;
+            color: white;
+            border: none;
+            background-color: deepskyblue;
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 7px;
+            box-shadow: -9px 11px 12px 0px rgba(0, 0, 0, 0.75);
+            font-weight: bold;
+        }
+        
+        #editor {
+            width: 100%;
+            height: 70%;
+        }
+        
+        .modal-mask {
+            position: fixed;
+            z-index: 9998;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, .5);
+            display: table;
+            transition: opacity .3s ease;
+        }
+        
+        .modal-wrapper {
+            display: table-cell;
+            vertical-align: middle;
+        }
+        
+        .modal-container {
+            width: 70%;
+            height: 35em;
+            margin: 0px auto;
+            padding: 20px 30px;
+            background-color: #fff;
+            border-radius: 2px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+            transition: all .3s ease;
+            font-family: Helvetica, Arial, sans-serif;
+        }
+        
+        .modal-header h3 {
+            margin-top: 0;
+            color: green;
+        }
+        
+        .modal-body {
+            margin: 20px 0;
+            width: 100%;
+            height: 80%;
+        }
+        
+        .modal-default-button-ok {
+            background: none;
+            color: white;
+            border: none;
+            background-color: green;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 7px;
+            font-weight: bold;
+            float: right;
+            margin-left: 10px;
+        }
+        
+        .modal-default-button-ko {
+            background: none;
+            color: white;
+            border: none;
+            background-color: darkred;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 7px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .modal-enter,
+        .modal-leave {
+            opacity: 0;
+        }
+        
+        .modal-enter .modal-container,
+        .modal-leave .modal-container {
+            -webkit-transform: scale(1.1);
+            transform: scale(1.1);
+        }
+        
         #check {
             width: 10%;
             display: inline-block;
@@ -86,9 +192,12 @@
         <template v-if="logged">
             <div id="block" class="centerMail">
                 <template v-if="auth">
+                    <button class="new" id="show-modal" @click="showModal = true" onclick="edit()">New email</button>
+                    <modal :show.sync="showModal"></modal>
                     <template v-for="mail in mails">
                         <div class="mail">
-                            <div class="mail-from">{{ mail._from }}</div>
+                            <div class="mail-from">{{ mail._from }}
+                                <br><span>{{ new Date(mail.date) }}</span></div>
                             <div class="mail-body">{{{ decodeURIComponent(mail._body) }}}</div>
                         </div>
                     </template>
@@ -113,7 +222,54 @@
 <script src="/vue.js"></script>
 <script src="/vue-resource.min.js"></script>
 <script src="/vue-router.min.js"></script>
+<script type="x/template" id="modal-template">
+    <div class="modal-mask" v-show="show" transition="modal">
+        <div class="modal-wrapper">
+            <div class="modal-container">
+
+                <div class="modal-header">
+                    <slot name="header">
+                        <span>To:</span>
+                        <input id="to" type="text">
+                        <span>Subject:</span>
+                        <input id="subject" type="text">
+                    </slot>
+                </div>
+
+                <div class="modal-body">
+                    <slot name="body">
+                        <div id="editor">
+                        </div>
+                    </slot>
+                </div>
+
+                <div class="modal-footer">
+                    <slot name="footer">
+                        <button class="modal-default-button-ko" @click="show = false">
+                            Cancel
+                        </button>
+                        <button class="modal-default-button-ok" @click="show = false" onclick="logn.send()">
+                            Send
+                        </button>
+                    </slot>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
 <script>
+    Vue.component('modal', {
+            template: '#modal-template',
+            props: {
+                show: {
+                    type: Boolean,
+                    required: true,
+                    twoWay: true    
+                }
+            }
+        });
+    
+    
         var logn = new Vue({
             el: '#app',
             data: {
@@ -123,7 +279,8 @@
                 mails: '',
                 stay: false,
                 auth: true,
-                token: ''
+                token: '',
+                showModal: false
             },
             methods: {
                 log: function() {
@@ -153,6 +310,17 @@
                     }, function(err){
                         console.log(err);
                     });
+                },
+                send: function(){
+                    var to = document.querySelector('#to').value;
+                    var from = this.user + '@galax.be';
+                    var subject = document.querySelector('#subject').value;
+                    var body = tinyMCE.editors[0].getContent();
+                    Vue.http.post('/new/' + this.token, {to: to, from: from, subject: subject, body: body}, {emulateJSON: true}).then(function(res){
+                         console.log(res.data);
+                    }, function(err){
+                         console.log(err);
+                    });
                 }
             }
         });
@@ -164,6 +332,22 @@
             logn.password = localStorage.getItem('galaxP');
             logn.stay = true;
             document.querySelector('#loginPassword').focus();
+        }
+        function edit(){
+            tinymce.init({
+                selector: '#editor',
+                height: 320,
+                plugins: [
+                    'advlist autolink lists link image charmap print preview anchor',
+                    'searchreplace visualblocks code fullscreen',
+                    'insertdatetime media table contextmenu paste code'
+                ],
+                toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+                content_css: [
+                    '//fast.fonts.net/cssapi/e6dc9b99-64fe-4292-ad98-6974f93cd2a2.css',
+                    '//www.tinymce.com/css/codepen.min.css'
+                ]
+            });
         }
 
 </script>
