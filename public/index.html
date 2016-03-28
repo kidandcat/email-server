@@ -212,7 +212,7 @@
         <template v-else>
             <div id="block" class="center">
                 <div id="title">Login</div>
-                <input type="text" v-model="user" placeholder="User" autofocus>
+                <input type="text" v-model="user" placeholder="User" v-on:keyup.enter="log" autofocus>
                 <input id="loginPassword" type="password" v-model="password" v-on:keyup.enter="log" placeholder="Password">
                 <input id="check" type="checkbox" v-model="stay"><span class="checkLabel">Stay logged</span>
             </div>
