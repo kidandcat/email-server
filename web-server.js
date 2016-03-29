@@ -58,7 +58,7 @@ app.post('/new/:token', function(req, res) {
                     console.log(err);
                 } else {
                     if (typeof rows[0] != 'undefined') {
-                        connection.query("INSERT INTO emails (_from, _to, _body) VALUES ('" + req.body.from + "', '" + req.body.to + "', '" + encodeURIComponent(req.body.body) + "')", function(err, rows, fields) {
+                        connection.query("INSERT INTO emails (_from, _to, _body, _subject) VALUES ('" + req.body.from + "', '" + req.body.to + "', '" + encodeURIComponent(req.body.body) + "', '" + req.body.subject + "')", function(err, rows, fields) {
                             if (err) {
                                 console.log(err);
                             } else {
