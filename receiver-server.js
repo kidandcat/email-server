@@ -15,7 +15,7 @@ mailin.on('message', function(conn, data, content) {
             console.log(err);
         } else {
             if (typeof rows[0] != 'undefined') {
-                connection.query("INSERT INTO emails (_from, _to, _body, _subject) VALUES ('" + data.envelopeFrom.address + "', '" + data.envelopeTo[0].address + "', '" + encodeURIComponent(data.html) + "', '" + data.subject + "')", function(err, rows, fields) {
+                connection.query("INSERT INTO emails (_from, _to, _body, _subject, _attachment) VALUES ('" + data.envelopeFrom.address + "', '" + data.envelopeTo[0].address + "', '" + encodeURIComponent(data.html) + "', '" + data.subject + "', '" + JSON.stringify(data.attachments) + "')", function(err, rows, fields) {
                     if (err) {
                         console.log(err);
                     } else {
