@@ -32,11 +32,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.post('/new/:token', function(req, res) {
-    auth(req.params.token,function(user){
-        if(user == "no user found"){
+    auth(req.params.token, function(user) {
+        if (user == "no user found") {
             res.send('not authorized');
             return false;
         }
+        console.log(req.body);
         req.body.from = user + '@galax.be';
         var data = querystring.stringify(req.body);
 
@@ -50,8 +51,8 @@ app.post('/new/:token', function(req, res) {
                 'Content-Length': Buffer.byteLength(data)
             }
         };
-            
-        if(req.body.to.split('@')[1] == 'galax.be'){
+
+        if (req.body.to.split('@')[1] == 'galax.be') {
             connection.query("SELECT * FROM users WHERE nick = '" + req.body.to.split('@')[0] + "'", function(err, rows, fields) {
                 if (err) {
                     console.log(err);
@@ -67,18 +68,17 @@ app.post('/new/:token', function(req, res) {
                     }
                 }
             });
-        }else{
-            var req = http.request(options, function(res) {
+        } else {
+            var req2 = http.request(options, function(res) {
                 res.setEncoding('utf8');
                 res.on('data', function(chunk) {
                     console.log("body: " + chunk);
                 });
             });
-
-            req.write(data);
-            req.end();
+            req2.write(data);
+            req2.end();
         }
-        
+
         res.send('ok');
     });
 });
@@ -106,8 +106,8 @@ app.get('/login/:user/:password', function(req, res) {
 });
 
 app.get('/mails/:token', function(req, res) {
-    auth(req.params.token,function(user){
-        if(user == "no user found"){
+    auth(req.params.token, function(user) {
+        if (user == "no user found") {
             res.send('not authorized');
             return false;
         }
@@ -150,7 +150,7 @@ function auth(token, cb) {
         } else {
             if (typeof rows[0] != 'undefined') {
                 cb(rows[0].nick);
-            }else{
+            } else {
                 cb("no user found");
             }
         }
