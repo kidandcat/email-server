@@ -50,16 +50,35 @@ app.post('/new/:token', function(req, res) {
                 'Content-Length': Buffer.byteLength(data)
             }
         };
-
-        var req = http.request(options, function(res) {
-            res.setEncoding('utf8');
-            res.on('data', function(chunk) {
-                console.log("body: " + chunk);
+            
+        if(req.body.to.split('@')[1] == 'galax.be'){
+            connection.query("SELECT * FROM users WHERE nick = '" + req.body.to.split('@')[0] + "'", function(err, rows, fields) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    if (typeof rows[0] != 'undefined') {
+                        connection.query("INSERT INTO emails (_from, _to, _body) VALUES ('" + req.body.from + "', '" + req.body.to + "', '" + encodeURIComponent(req.body.body) + "')", function(err, rows, fields) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log('NEW MESSAGE');
+                            }
+                        });
+                    }
+                }
             });
-        });
+        }else{
+            var req = http.request(options, function(res) {
+                res.setEncoding('utf8');
+                res.on('data', function(chunk) {
+                    console.log("body: " + chunk);
+                });
+            });
 
-        req.write(data);
-        req.end();
+            req.write(data);
+            req.end();
+        }
+        
         res.send('ok');
     });
 });
