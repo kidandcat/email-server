@@ -363,7 +363,7 @@
         }
         
         function arrayBuffer2String(buffer, type){
-            return window.URL.createObjectURL(new Blob(buffer, { type: 'application/octet-stream' }));
+            return window.URL.createObjectURL(new Blob(buffer, { type: type }));
         }
 
 </script>
