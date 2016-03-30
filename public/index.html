@@ -365,7 +365,7 @@
         function arrayBuffer2String(buffer, type){
             console.log(String.fromCharCode.apply(null, new Uint16Array(buffer)));
             console.log(StringToUint8Array(String.fromCharCode.apply(null, new Uint16Array(buffer))));
-            return window.URL.createObjectURL(new Blob(String.fromCharCode.apply(null, new Uint16Array(buffer))), { type: type });
+            return window.URL.createObjectURL(new Blob(String.fromCharCode.apply(null, new Uint16Array(StringToUint8Array(String.fromCharCode.apply(null, new Uint16Array(buffer)))))), { type: type });
         }
         
         function StringToUint8Array(string) {
