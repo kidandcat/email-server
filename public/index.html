@@ -201,7 +201,7 @@
                             <div class="mail-body">
                                 {{{ decodeURIComponent(mail._body) }}}
                             </div>
-                            <div v-for="att in mail.attachment"><a href="data:{{ att.contentType }};{{ att.transferEncoding }},{{ att.content.base }}">{{ att.fileName }}</a></div>
+                            <div v-for="att in mail.attachment"><a href="{{ att.content.base }}">{{ att.fileName }}</a></div>
                         </div>
                     </template>
                 </template>
