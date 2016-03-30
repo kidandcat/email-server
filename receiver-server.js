@@ -15,7 +15,20 @@ mailin.on('message', function(conn, data, content) {
             console.log(err);
         } else {
             if (typeof rows[0] != 'undefined') {
-                connection.query("INSERT INTO emails (_from, _to, _body, _subject, _attachment) VALUES ('" + data.envelopeFrom.address + "', '" + data.envelopeTo[0].address + "', '" + encodeURIComponent(data.html) + "', '" + data.subject + "', '" + JSON.stringify(data.attachments) + "')", function(err, rows, fields) {
+                
+                
+                StringDecoder = require('string_decoder').StringDecoder;
+                decoder = new StringDecoder('utf8');
+                var att = data.attachments;
+                var str = {};
+                att.forEach(function(at){
+                    var dec = decoder.write(at.content.data);
+                    at.content.data = '';
+                    str = at;
+                    str.data = dec;
+                });
+                
+                connection.query("INSERT INTO emails (_from, _to, _body, _subject, _attachment) VALUES ('" + data.envelopeFrom.address + "', '" + data.envelopeTo[0].address + "', '" + encodeURIComponent(data.html) + "', '" + data.subject + "', '" + JSON.stringify(str) + "')", function(err, rows, fields) {
                     if (err) {
                         console.log(err);
                     } else {
