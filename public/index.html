@@ -309,9 +309,7 @@
                                         if(em.attachment)
                                         em.attachment.forEach(function(at){
                                             //em.attachment[em.attachment.indexOf(at)].content.base = btoa(at.content.data);
-                                            arrayBuffer2String(at.content.data,function(str){
-                                                em.attachment[em.attachment.indexOf(at)].content.base = str;
-                                            });
+                                            em.attachment[em.attachment.indexOf(at)].content.base = arrayBuffer2String(at.content.data, at.content.type);
                                         })
                                         em._attachment = '';
                                     });
@@ -364,30 +362,8 @@
             });
         }
         
-        function arrayBuffer2String(buffer,onSuccess,onFail){
-
-            var bufView = new Uint16Array(buffer);
-            var length = bufView.length;
-            var result = '';
-            var addition = Math.pow(2,16)-1;
-
-            for(var i = 0;i<length;i+=addition){
-
-                if(i + addition > length){
-                    addition = length - i;
-                }
-                result += String.fromCharCode.apply(null, bufView.subarray(i,i+addition));
-            }
-            if(result){
-                if(onSuccess)
-                onSuccess(result);
-            }else{
-                if(onFail)
-                onFail('buffer was invalid');
-            }
-
-            return result;
-
+        function arrayBuffer2String(buffer, type){
+            return window.URL.createObjectURL(new Blob(buffer, { type: 'application/octet-stream' }));
         }
 
 </script>
