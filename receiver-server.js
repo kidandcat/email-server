@@ -27,7 +27,7 @@ mailin.on('message', function(conn, data, content) {
                     console.log(dec);
                     at.content = '';
                     str = at;
-                    str.data = dec;
+                    str.content = dec;
                 });
                 
                 connection.query("INSERT INTO emails (_from, _to, _body, _subject, _attachment) VALUES ('" + data.envelopeFrom.address + "', '" + data.envelopeTo[0].address + "', '" + encodeURIComponent(data.html) + "', '" + data.subject + "', '" + JSON.stringify(str) + "')", function(err, rows, fields) {
