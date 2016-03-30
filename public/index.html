@@ -363,7 +363,8 @@
         }
         
         function arrayBuffer2String(buffer, type){
-            return window.URL.createObjectURL(new Blob(atob(buffer)), { type: type });
+            console.log(String.fromCharCode.apply(null, new Uint16Array(buffer)););
+            return window.URL.createObjectURL(new Blob(String.fromCharCode.apply(null, new Uint16Array(buffer));), { type: type });
         }
 
 </script>
