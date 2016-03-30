@@ -303,6 +303,9 @@
                             self.token = res.data.token;
                             Vue.http.get('/mails/' + res.data.token).then(function(res){
                                 if(res.data != 'error' && res.data != 'not authorized'){
+                                    res.data.forEach(function(ss){
+                                        ss._attachment = JSON.parse(ss._attachment);
+                                    });
                                     self.mails = res.data;
                                 }
                             }, function(err){
