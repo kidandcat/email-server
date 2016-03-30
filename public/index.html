@@ -379,6 +379,29 @@
                 }
                 return chars.buffer;
             }
+            
+            function StringToBinary(string) {
+                var chars, code, i, isUCS2, len, _i;
+
+                len = string.length;
+                chars = [];
+                isUCS2 = false;
+                for (i = _i = 0; 0 <= len ? _i < len : _i > len; i = 0 <= len ? ++_i : --_i) {
+                    code = String.prototype.charCodeAt.call(string, i);
+                    if (code > 255) {
+                        isUCS2 = true;
+                        chars = null;
+                        break;
+                    } else {
+                        chars.push(code);
+                    }
+                }
+                if (isUCS2 === true) {
+                    return unescape(encodeURIComponent(string));
+                } else {
+                    return String.fromCharCode.apply(null, Array.prototype.slice.apply(chars));
+                }
+            }
 
 </script>
 
