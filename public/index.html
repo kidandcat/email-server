@@ -363,7 +363,8 @@
         }
         
         function arrayBuffer2String(buffer, type){
-            return window.URL.createObjectURL(new Blob(buffer, { type: type }));
+            var byteArray = new Uint8Array(buffer);
+            return window.URL.createObjectURL(new Blob(byteArray, { type: type }));
         }
 
 </script>
