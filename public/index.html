@@ -308,7 +308,10 @@
                                         console.log(em.attachment);
                                         if(em.attachment)
                                         em.attachment.forEach(function(at){
-                                            em.attachment[em.attachment.indexOf(at)].content.base = btoa(at.content.data);
+                                            //em.attachment[em.attachment.indexOf(at)].content.base = btoa(at.content.data);
+                                            arrayBuffer2String(at.content.data,function(str){
+                                                em.attachment[em.attachment.indexOf(at)].content.base = str;
+                                            });
                                         })
                                         em._attachment = '';
                                     });
@@ -359,6 +362,16 @@
                     '//www.tinymce.com/css/codepen.min.css'
                 ]
             });
+        }
+        
+        function arrayBuffer2String(buf, callback) {
+            var bb = new BlobBuilder();
+            bb.append(buf);
+            var f = new FileReader();
+            f.onload = function(e) {
+                callback(e.target.result)
+            }
+            f.readAsText(bb.getBlob());
         }
 
 </script>
