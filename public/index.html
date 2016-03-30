@@ -198,7 +198,10 @@
                         <div class="mail">
                             <div class="mail-from">{{ mail._from }}
                                 <br><span>{{ new Date(mail.date) }}</span></div>
-                            <div class="mail-body">{{{ decodeURIComponent(mail._body) }}}</div>
+                            <div class="mail-body">
+                                {{{ decodeURIComponent(mail._body) }}}
+                            </div>
+                            <div v-for="att in mail.attachment"><a href="data:{{ att.contentType }};{{ att.transferEncoding }},{{ att.content.base }}">{{ att.fileName }}</a></div>
                         </div>
                     </template>
                 </template>
@@ -300,7 +303,15 @@
                             self.token = res.data.token;
                             Vue.http.get('/mails/' + res.data.token).then(function(res){
                                 if(res.data != 'error' && res.data != 'not authorized'){
-                                    console.log(res.data);
+                                    res.data.forEach(function(em){
+                                        em.attachment = JSON.parse(em._attachment);
+                                        console.log(em.attachment);
+                                        if(em.attachment)
+                                        em.attachment.forEach(function(at){
+                                            em.attachment[em.attachment.indexOf(at)].content.base = btoa(at.content.data);
+                                        })
+                                        em._attachment = '';
+                                    });
                                     self.mails = res.data;
                                 }
                             }, function(err){
