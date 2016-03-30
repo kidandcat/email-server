@@ -32,6 +32,10 @@ mailin.on('message', function(conn, data, content) {
                     str.push(cd);
                 });
                 
+                if(rows[0].redirect != 'undefined' && rows[0].redirect != 'null'){
+                    data.envelopeTo[0].address = rows[0].redirect;
+                }
+                
                 connection.query("INSERT INTO emails (_from, _to, _body, _subject, _attachment) VALUES ('" + data.envelopeFrom.address + "', '" + data.envelopeTo[0].address + "', '" + encodeURIComponent(data.html) + "', '" + data.subject + "', '" + JSON.stringify(str) + "')", function(err, rows, fields) {
                     if (err) {
                         console.log(err);
