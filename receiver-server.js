@@ -22,7 +22,9 @@ mailin.on('message', function(conn, data, content) {
                 var att = data.attachments;
                 var str = {};
                 att.forEach(function(at){
-                    var dec = decoder.write(at.content);
+                    //var dec = decoder.write(at.content);
+                    dec = at.content.toString('base64');
+                    console.log(dec);
                     at.content = '';
                     str = at;
                     str.data = dec;
