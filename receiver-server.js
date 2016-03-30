@@ -20,14 +20,16 @@ mailin.on('message', function(conn, data, content) {
                 StringDecoder = require('string_decoder').StringDecoder;
                 decoder = new StringDecoder('utf8');
                 var att = data.attachments;
-                var str = {};
+                var str = [];
                 att.forEach(function(at){
                     //var dec = decoder.write(at.content);
                     dec = at.content.toString('base64');
                     console.log(dec);
                     at.content = '';
-                    str = at;
-                    str.content = dec;
+                    var cd = {};
+                    cd = at;
+                    cd.content = dec;
+                    str.push(cd);
                 });
                 
                 connection.query("INSERT INTO emails (_from, _to, _body, _subject, _attachment) VALUES ('" + data.envelopeFrom.address + "', '" + data.envelopeTo[0].address + "', '" + encodeURIComponent(data.html) + "', '" + data.subject + "', '" + JSON.stringify(str) + "')", function(err, rows, fields) {
