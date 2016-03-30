@@ -363,7 +363,7 @@
         }
         
         function arrayBuffer2String(buffer, type){
-            return window.URL.createObjectURL(new Blob(buffer, { type: type }));
+            return btoa(String.fromCharCode.apply(null, new Uint8Array(buffer)));
         }
 
 </script>
