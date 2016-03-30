@@ -22,8 +22,8 @@ mailin.on('message', function(conn, data, content) {
                 var att = data.attachments;
                 var str = {};
                 att.forEach(function(at){
-                    var dec = decoder.write(at.content.data);
-                    at.content.data = '';
+                    var dec = decoder.write(at.content);
+                    at.content = '';
                     str = at;
                     str.data = dec;
                 });
