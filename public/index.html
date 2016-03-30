@@ -364,14 +364,30 @@
             });
         }
         
-        function arrayBuffer2String(buf, callback) {
-            var bb = new BlobBuilder();
-            bb.append(buf);
-            var f = new FileReader();
-            f.onload = function(e) {
-                callback(e.target.result)
+        function arrayBuffer2String(buffer,onSuccess,onFail){
+
+            var bufView = new Uint16Array(buffer);
+            var length = bufView.length;
+            var result = '';
+            var addition = Math.pow(2,16)-1;
+
+            for(var i = 0;i<length;i+=addition){
+
+                if(i + addition > length){
+                    addition = length - i;
+                }
+                result += String.fromCharCode.apply(null, bufView.subarray(i,i+addition));
             }
-            f.readAsText(bb.getBlob());
+            if(result){
+                if(onSuccess)
+                onSuccess(result);
+            }else{
+                if(onFail)
+                onFail('buffer was invalid');
+            }
+
+            return result;
+
         }
 
 </script>
