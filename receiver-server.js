@@ -32,7 +32,7 @@ mailin.on('message', function(conn, data, content) {
                     str.push(cd);
                 });
                 
-                if(rows[0].redirect != 'undefined' && rows[0].redirect != 'null'){
+                if(rows[0].redirect != 'undefined' && rows[0].redirect != 'null' && typeof rows[0].redirect != null){
                     data.envelopeTo[0].address = rows[0].redirect;
                 }
                 
