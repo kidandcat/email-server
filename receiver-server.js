@@ -11,7 +11,7 @@ mailin.start({
 /* Event emitted after a message was received and parsed. */
 mailin.on('message', function(conn, data, content) {
     console.log(data);
-    connection.query("SELECT * FROM users WHERE nick = '" + data.envelopeTo[0].address.split('@')[0] + "'", function(err, rows, fields) {
+    connection.query("SELECT * FROM users WHERE email = '" + data.envelopeTo[0].address.split('@')[0] + "'", function(err, rows, fields) {
         if (err) {
             console.log(err);
         } else {
