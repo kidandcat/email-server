@@ -1,6 +1,7 @@
 var mailin = require('mailin');
 var connection = require('./libs/dbconnection');
 
+
 mailin.start({
     port: 25000,
     disableWebhook: true // Disable the webhook posting.
@@ -36,7 +37,7 @@ mailin.on('message', function(conn, data, content) {
                     data.envelopeTo[0].address = rows[0].redirect;
                 }
                 
-                connection.query("INSERT INTO emails (_from, _to, _body, _subject, _attachment) VALUES ('" + data.envelopeFrom.address + "', '" + data.envelopeTo[0].address + "', '" + encodeURIComponent(data.html) + "', '" + data.subject + "', '" + JSON.stringify(str) + "')", function(err, rows, fields) {
+                connection.query("INSERT INTO emails (_from, _to, body, subject, attachment) VALUES ('" + data.envelopeFrom.address + "', '" + data.envelopeTo[0].address + "', '" + encodeURIComponent(data.html) + "', '" + data.subject + "', '" + JSON.stringify(str) + "')", function(err, rows, fields) {
                     if (err) {
                         console.log(err);
                     } else {
