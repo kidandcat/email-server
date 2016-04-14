@@ -1,6 +1,7 @@
 var mailin = require('mailin');
 var connection = require('./libs/dbconnection');
 
+
 mailin.start({
     port: 25000,
     disableWebhook: true // Disable the webhook posting.
@@ -10,7 +11,7 @@ mailin.start({
 /* Event emitted after a message was received and parsed. */
 mailin.on('message', function(conn, data, content) {
     console.log(data);
-    connection.query("SELECT * FROM users WHERE nick = '" + data.envelopeTo[0].address.split('@')[0] + "'", function(err, rows, fields) {
+    connection.query("SELECT * FROM users WHERE email = '" + data.envelopeTo[0].address + "'", function(err, rows, fields) {
         if (err) {
             console.log(err);
         } else {
@@ -36,8 +37,7 @@ mailin.on('message', function(conn, data, content) {
                     data.envelopeTo[0].address = rows[0].redirect;
                 }
                 
-                
-                connection.query("INSERT INTO emails (_from, _to, _body, _subject, _attachment) VALUES ('" + data.envelopeFrom.address + "', '" + data.envelopeTo[0].address + "', '" + encodeURIComponent(data.html) + "', '" + data.subject + "', '" + JSON.stringify(str) + "')", function(err, rows, fields) {
+                connection.query("INSERT INTO emails (_from, _to, body, subject, attachment) VALUES ('" + data.envelopeFrom.address + "', '" + data.envelopeTo[0].address + "', '" + encodeURIComponent(data.html) + "', '" + data.subject + "', '" + JSON.stringify(str) + "')", function(err, rows, fields) {
                     if (err) {
                         console.log(err);
                     } else {
