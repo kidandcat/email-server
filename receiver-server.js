@@ -41,7 +41,6 @@ mailin.on('message', function(conn, data, content) {
                     if (err) {
                         console.log(err);
                     } else {
-                        connection.query("ALTER TABLE emails ORDER BY date DESC", function(err, rows, fields) {});
                         console.log('NEW MESSAGE');
                     }
                 });
